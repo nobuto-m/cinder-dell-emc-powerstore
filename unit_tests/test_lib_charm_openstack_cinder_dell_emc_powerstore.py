@@ -45,8 +45,10 @@ class TestCinderDellEMCPowerStoreCharm(test_utils.PatchHelper):
         charm = self._patch_config_and_charm(
             {
                 "volume-backend-name": "my_backend_name",
-                "protocol": "iscsi",
-                # more options to test
+                "protocol": "iSCSI",
+                "san-ip": "192.0.2.1",
+                "san-login": "superuser",
+                "san-password": "my-password",
             }
         )
         config = charm.cinder_configuration()
@@ -55,7 +57,45 @@ class TestCinderDellEMCPowerStoreCharm(test_utils.PatchHelper):
             config,
             [
                 ("volume_backend_name", "my_backend_name"),
-                ("volume_driver", ""),
+                (
+                    "volume_driver",
+                    "cinder.volume.drivers.dell_emc.powerstore.driver.PowerStoreDriver",  # noqa
+                ),
+                ("storage_protocol", "iSCSI"),
+                ("san_ip", "192.0.2.1"),
+                ("san_login", "superuser"),
+                ("san_password", "my-password"),
+            ],
+        )
+
+    def test_cinder_configuration_fc(self):
+        charm = self._patch_config_and_charm(
+            {
+                "volume-backend-name": "my_backend_name",
+                "protocol": "FC",
+                "san-ip": "192.0.2.1",
+                "san-login": "superuser",
+                "san-password": "my-password",
+                "powerstore-ports": "58:cc:f0:98:49:22:07:02,58:cc:f0:98:49:23:07:02",  # noqa
+            }
+        )
+        config = charm.cinder_configuration()
+        self.assertEqual(
+            config,
+            [
+                ("volume_backend_name", "my_backend_name"),
+                (
+                    "volume_driver",
+                    "cinder.volume.drivers.dell_emc.powerstore.driver.PowerStoreDriver",  # noqa
+                ),
+                ("storage_protocol", "FC"),
+                ("san_ip", "192.0.2.1"),
+                ("san_login", "superuser"),
+                ("san_password", "my-password"),
+                (
+                    "powerstore_ports",
+                    "58:cc:f0:98:49:22:07:02,58:cc:f0:98:49:23:07:02",
+                ),
             ],
         )
 
@@ -64,7 +104,10 @@ class TestCinderDellEMCPowerStoreCharm(test_utils.PatchHelper):
         self.service_name.return_value = "cinder-myapp-name"
         charm = self._patch_config_and_charm(
             {
-                "protocol": None,
+                "protocol": "iSCSI",
+                "san-ip": "192.0.2.1",
+                "san-login": "superuser",
+                "san-password": None,
             }
         )
         config = charm.cinder_configuration()
@@ -75,8 +118,11 @@ class TestCinderDellEMCPowerStoreCharm(test_utils.PatchHelper):
         self.service_name.return_value = "cinder-myapp-name"
         charm = self._patch_config_and_charm(
             {
-                "protocol": "iscsi",
+                "protocol": "iSCSI",
                 "volume-backend-name": None,
+                "san-ip": "192.0.2.1",
+                "san-login": "superuser",
+                "san-password": "my-password",
             }
         )
         config = charm.cinder_configuration()
@@ -84,7 +130,14 @@ class TestCinderDellEMCPowerStoreCharm(test_utils.PatchHelper):
             config,
             [
                 ("volume_backend_name", "cinder-myapp-name"),
-                ("volume_driver", ""),
+                (
+                    "volume_driver",
+                    "cinder.volume.drivers.dell_emc.powerstore.driver.PowerStoreDriver",  # noqa
+                ),
+                ("storage_protocol", "iSCSI"),
+                ("san_ip", "192.0.2.1"),
+                ("san_login", "superuser"),
+                ("san_password", "my-password"),
             ],
         )
 
@@ -93,7 +146,10 @@ class TestCinderDellEMCPowerStoreCharm(test_utils.PatchHelper):
             {
                 "volume-backend-name": "my_backend_name",
                 "use-multipath": True,
-                "protocol": "iscsi",
+                "protocol": "iSCSI",
+                "san-ip": "192.0.2.1",
+                "san-login": "superuser",
+                "san-password": "my-password",
             }
         )
         config = charm.cinder_configuration()
@@ -101,7 +157,14 @@ class TestCinderDellEMCPowerStoreCharm(test_utils.PatchHelper):
             config,
             [
                 ("volume_backend_name", "my_backend_name"),
-                ("volume_driver", ""),
+                (
+                    "volume_driver",
+                    "cinder.volume.drivers.dell_emc.powerstore.driver.PowerStoreDriver",  # noqa
+                ),
+                ("storage_protocol", "iSCSI"),
+                ("san_ip", "192.0.2.1"),
+                ("san_login", "superuser"),
+                ("san_password", "my-password"),
                 ("use_multipath_for_image_xfer", True),
                 ("enforce_multipath_for_image_xfer", True),
             ],

@@ -35,7 +35,7 @@ class CinderDellEMCPowerStoreCharm(
     stateless = True
 
     # Specify any config that the user *must* set.
-    mandatory_config = ["protocol"]
+    mandatory_config = ["protocol", "san-ip", "san-login", "san-password"]
 
     def cinder_configuration(self):
         mandatory_config_values = map(self.config.get, self.mandatory_config)
@@ -47,12 +47,17 @@ class CinderDellEMCPowerStoreCharm(
         else:
             volume_backend_name = self.service_name
 
-        volume_driver = ""
+        volume_driver = (
+            "cinder.volume.drivers.dell_emc.powerstore.driver.PowerStoreDriver"
+        )
 
         driver_options = [
             ("volume_backend_name", volume_backend_name),
             ("volume_driver", volume_driver),
-            # Add config options that needs setting on cinder.conf
+            ("storage_protocol", self.config.get("protocol")),
+            ("san_ip", self.config.get("san-ip")),
+            ("san_login", self.config.get("san-login")),
+            ("san_password", self.config.get("san-password")),
         ]
 
         if self.config.get("use-multipath"):
@@ -61,6 +66,11 @@ class CinderDellEMCPowerStoreCharm(
                     ("use_multipath_for_image_xfer", True),
                     ("enforce_multipath_for_image_xfer", True),
                 ]
+            )
+
+        if self.config.get("powerstore-ports"):
+            driver_options.extend(
+                [("powerstore_ports", self.config.get("powerstore-ports"))]
             )
 
         return driver_options

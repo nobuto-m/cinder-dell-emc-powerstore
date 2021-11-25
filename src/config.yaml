@@ -16,4 +16,25 @@ options:
     type: string
     default:
     description: |
-      SAN protocol to use. Choose between iscsi or fc.
+      SAN protocol to use. Choose between iSCSI or FC.
+  san-ip:
+    type: string
+    default:
+    description: |
+      PowerStore REST IP.
+  san-login:
+    type: string
+    default:
+    description: |
+      PowerStore REST username.
+  san-password:
+    type: string
+    default:
+    description: |
+      PowerStore REST password.
+  powerstore-ports:
+    type: string
+    default:
+    description: |
+      Allowed ports. Comma separated list of PowerStore iSCSI IPs or FC
+      WWNs to be used. If option is not set all ports are allowed.
