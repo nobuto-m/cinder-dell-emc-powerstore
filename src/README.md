@@ -1,17 +1,17 @@
-DellEMCPowerStore Storage Backend for Cinder
+Dell EMC PowerStore Storage Backend for Cinder
 -------------------------------
 
 Overview
 ========
 
-This charm provides a DellEMCPowerStore storage backend for use with the Cinder
+This charm provides a Dell EMC PowerStore storage backend for use with the Cinder
 charm.
 
 To use:
 
     juju deploy cinder
-    juju deploy cinder-dell_emc_powerstore
-    juju add-relation cinder-dell_emc_powerstore cinder
+    juju deploy cinder-dell-emc-powerstore
+    juju add-relation cinder-dell-emc-powerstore cinder
 
 Configuration
 =============
